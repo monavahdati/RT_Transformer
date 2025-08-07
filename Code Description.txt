@@ -1,0 +1,106 @@
+The code implements a lightweight Transformer-based neural network named RTTransformer for a multiclass classification task using PyTorch. It is optimized for structured tabular data, providing both accuracy and computational efficiency.
+
+Below is a breakdown of the main components:
+
+1. Model Architecture Definition
+A custom class RTTransformer is defined with the following structure:
+
+Input Linear Layer:
+
+python
+Copy
+Edit
+self.input_linear = nn.Linear(input_dim, d_model)
+Projects the original feature dimension into the Transformer’s model dimension (d_model).
+
+Transformer Encoder:
+
+python
+Copy
+Edit
+nn.TransformerEncoder(...)
+Applies multi-head self-attention to model dependencies between input features. Uses num_layers=4 and num_heads=8.
+
+Global Average Pooling:
+
+python
+Copy
+Edit
+x = x.mean(dim=1)
+Aggregates the sequence dimension into a fixed-size vector for classification.
+
+Fully Connected Output Layer:
+
+python
+Copy
+Edit
+self.fc_out = nn.Linear(d_model, num_classes)
+Outputs logits for classification into two classes (num_classes=2).
+
+2. Model Initialization
+The model is instantiated with:
+
+python
+Copy
+Edit
+model = RTTransformer(
+    input_dim=X_train.shape[1],
+    d_model=64,
+    num_heads=8,
+    num_layers=4,
+    num_classes=2
+)
+The model is moved to the appropriate device (e.g., GPU or CPU) for training.
+
+3. Training Configuration
+Loss Function:
+nn.CrossEntropyLoss() – suitable for multi-class classification tasks.
+
+Optimizer:
+torch.optim.Adam() with a learning rate of 1e-3.
+
+Epochs:
+The model is trained over 100 epochs.
+
+DataLoader:
+Training data is wrapped in a PyTorch DataLoader for efficient mini-batch training (batch_size=256).
+
+4. Training Loop
+The training process includes:
+
+Forward pass
+
+Loss computation
+
+Backward pass and parameter update
+
+Accuracy calculation
+
+Logging of training loss and accuracy
+
+5. Validation Step
+At the end of each epoch, the model is evaluated on the test set.
+
+Validation predictions are generated and compared to the ground truth using accuracy_score from scikit-learn.
+
+Validation accuracy is stored in val_accuracies.
+
+6. Performance Monitoring
+The model tracks and prints the following at each epoch:
+
+Average training loss
+
+Training accuracy
+
+Validation accuracy
+
+This enables easy performance visualization and debugging.
+
+💡 Use Case
+This model is particularly useful for:
+
+Binary or multiclass classification on tabular data.
+
+Tasks where attention-based models outperform classical MLPs or tree-based models.
+
+Efficient training in environments with limited compute due to its compact architecture.
